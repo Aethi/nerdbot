@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact name="plugin:yml">
+    <output-path>$PROJECT_DIR$/out/artifacts/nerdbot_jar</output-path>
+    <root id="root" />
+  </artifact>
+</component>
