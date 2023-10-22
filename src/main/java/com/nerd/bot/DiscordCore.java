@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -26,10 +25,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.security.auth.login.LoginException;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.EnumSet;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.awt.Color;
+
+import com.sun.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
 
 import org.bukkit.entity.Player;
 
@@ -87,7 +88,7 @@ public class DiscordCore extends ListenerAdapter {
     @Override
     public void onMessageReceived( MessageReceivedEvent event ) {
         User author = event.getAuthor( );
-        Message message = event.getMessage( );
+        String message = event.getMessage( ).getContentStripped( );
 
         // Don't infinitely loop
         if ( author == api.getSelfUser( ) ) {
@@ -95,39 +96,41 @@ public class DiscordCore extends ListenerAdapter {
         }
 
         // Likely image, just skip
-        if ( message.getContentStripped( ).isEmpty( ) ) {
+        if ( message.isEmpty( ) ) {
             return;
         }
 
         if ( event.getChannel( ).getId( ).equals( plugin.getConfig( ).getString( "channel_id" ) ) &&
              Objects.equals(plugin.getConfig().getString( "logging_only"), "false" ) ) {
-            plugin.sendMessage( "<" + author.getName( ) + "> §b" + message.getContentStripped( ) );
+            if ( message.length( ) > 256 )
+                message = message.substring( 0, 256 );
+
+            plugin.sendMessage( "<" + author.getName( ) + "> §b" + message );
         }
     }
 
     @Override
     public void onSlashCommandInteraction( SlashCommandInteractionEvent event ) {
-        // make sure we handle the right command
         switch ( event.getName( ) ) {
             case "status":
-                // Create the EmbedBuilder instance
                 EmbedBuilder embed = new EmbedBuilder( );
 
                 embed.setTitle( "Server Status", null );
                 embed.setColor( new Color( 0x0CF4C6 ) );
+                embed.setThumbnail("https://couldntbe.me/media/bsod.png");
 
-                embed.addField( "Player Count", plugin.getServer( ).getOnlinePlayers( ).length + "/" + plugin.getServer( ).getMaxPlayers( ), false );
+                embed.addField( "Player Count", plugin.getServer( ).getOnlinePlayers( ).length + "/" + plugin.getServer( ).getMaxPlayers( ), true );
+                embed.addField( "JVM Usage", String.format( "%.2f", ManagementFactory.getPlatformMXBean( OperatingSystemMXBean.class ).getProcessCpuLoad() * 100 ) + "%", true );
 
                 StringBuilder playerList = new StringBuilder( );
                 for ( final Player player : plugin.getServer( ).getOnlinePlayers( ) ) {
-                    playerList.append( player.getDisplayName( ) );
+                    String playerName = ( Objects.equals( plugin.getConfig( ).getString( "use_nicknames" ), "true") ) ? player.getDisplayName( ) : player.getName( );
+                    playerList.append( playerName );
                     playerList.append( " " );
                 }
-
                 embed.addField( "Players", playerList.toString( ), false );
 
-                embed.setFooter("Boobs farts n sex", "https://couldntbe.me/media/bsod.png");
-                embed.setThumbnail("https://couldntbe.me/media/bsod.png");
+                embed.setFooter( plugin.getServer( ).getVersion( ), event.getUser( ).getAvatarUrl( ) );
 
                 plugin.log(Level.INFO, event.getInteraction( ).getUser( ).getName( ) + " used /status" );
                 event.replyEmbeds( embed.build( ) ).complete( );

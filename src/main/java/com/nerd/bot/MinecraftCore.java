@@ -32,6 +32,8 @@ public class MinecraftCore extends JavaPlugin implements Listener {
         MinecraftCore plugin = this;
         final Chat gameListener = new Chat( plugin );
         getServer( ).getPluginManager( ).registerEvent( Event.Type.PLAYER_CHAT, gameListener, Event.Priority.Highest, this );
+        getServer( ).getPluginManager( ).registerEvent( Event.Type.PLAYER_JOIN, gameListener, Event.Priority.Highest, this );
+        getServer( ).getPluginManager( ).registerEvent( Event.Type.PLAYER_QUIT, gameListener, Event.Priority.Highest, this );
 
         /*
          * Load and read our config
@@ -54,6 +56,9 @@ public class MinecraftCore extends JavaPlugin implements Listener {
             config.setProperty( "token", "paste_token_here" );
             config.setProperty( "channel_id", "paste_channelid_here" );
             config.setProperty( "logging_only", false );
+            config.setProperty( "log_connection", true );
+            config.setProperty( "use_nicknames", false );
+            config.setProperty( "embed_photo", "https://couldntbe.me/media/bsod.png" );
 
             config.save( );
 

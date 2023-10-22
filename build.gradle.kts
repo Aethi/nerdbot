@@ -6,7 +6,7 @@ plugins {
 application.mainClass = "com.nerd.bot.DiscordCore"
 
 group = "org.nerd"
-version = "1.0"
+version = "1.1"
 
 val jdaVersion = "5.0.0-beta.15"
 
