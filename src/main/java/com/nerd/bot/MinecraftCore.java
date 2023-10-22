@@ -62,6 +62,7 @@ public class MinecraftCore extends JavaPlugin implements Listener {
 
             config.save( );
 
+            log( Level.SEVERE, "Config created, please supply it with your Discord information." );
             Bukkit.getServer( ).getPluginManager( ).disablePlugin( plugin );
             return;
         }

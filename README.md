@@ -6,7 +6,7 @@
 
 ## Compiling
 * Gradle handles [JDA](https://github.com/discord-jda/JDA) dependency linking
-* You'll need to link Bukkit 1.7.3 in your project's Artifacts
+* You'll need to link [Bukkit 1.7.3](https://archive.org/details/minecraftarchive) in your project's Artifacts
 * Build with Gradle's shadowJar task
 
 ## Usage

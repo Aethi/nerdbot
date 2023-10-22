@@ -62,6 +62,8 @@ public class DiscordCore extends ListenerAdapter {
     }
 
     public void Stop( ) {
+        sendMessage( plugin.getConfig( ).getString( "channel_id" ), "Plugin shutting down..." );
+
         api.shutdownNow( );
     }
 

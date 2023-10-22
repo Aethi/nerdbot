@@ -26,8 +26,21 @@ public class Chat extends PlayerListener {
             return;
         }
 
+        String message = event.getMessage( );
+
+        /*
+         * Remove @everyone/@here
+         */
+        if ( message.contains( "@everyone" ) ||
+             message.contains( "@here" ) ) {
+            message = message.replaceAll("@everyone", "at everyone");
+            message = message.replaceAll("@here", "at here");
+
+            message = message.trim();
+        }
+
         String playerName = ( Objects.equals( plugin.getConfig( ).getString( "use_nicknames" ), "true") ) ? event.getPlayer( ).getDisplayName( ) : event.getPlayer( ).getName( );
-        plugin.getDiscord( ).sendMessage( plugin.getConfig( ).getString( "channel_id" ), playerName + ": " + event.getMessage( ) );
+        plugin.getDiscord( ).sendMessage( plugin.getConfig( ).getString( "channel_id" ), playerName + ": " + message );
     }
 
     @Override
