@@ -119,7 +119,7 @@ public class DiscordCore extends ListenerAdapter {
 
                 embed.setTitle( "Server Status", null );
                 embed.setColor( new Color( 0x0CF4C6 ) );
-                embed.setThumbnail("https://couldntbe.me/media/bsod.png");
+                embed.setThumbnail( plugin.getConfig( ).getString( "embed_photo" ) );
 
                 embed.addField( "Player Count", plugin.getServer( ).getOnlinePlayers( ).length + "/" + plugin.getServer( ).getMaxPlayers( ), true );
                 embed.addField( "JVM Usage", String.format( "%.2f", ManagementFactory.getPlatformMXBean( OperatingSystemMXBean.class ).getProcessCpuLoad() * 100 ) + "%", true );
